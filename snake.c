@@ -14,6 +14,7 @@
 #include <ncurses.h>
 #include <time.h>
 
+// @todo including .c files seems rather wrong...
 #include "snake.h"
 #include "linked_list.c"
 
@@ -29,7 +30,7 @@ void setup() {
 
 	// We don't want to wait for the EOF && getch shall not block the terminal
 	cbreak();
-	timeout(1);
+	timeout(0);
 
 	// Without keypad enabled KEY_* and getch won't match
 	keypad(win, TRUE);
@@ -51,8 +52,54 @@ void tear_down() {
 	endwin();
 }
 
+int collides() {
+	llnode *HEAD = snake;
+
+	// Head hits the borders
+	if (HEAD->part.x == 0 || HEAD->part.x == width || HEAD->part.y == 0 || HEAD->part.y == height) {
+		return 1;
+	}
+
+	// Head hits it's own tail
+	/*
+	llnode *next;
+	while (next != NULL) {
+		if (HEAD->part.x == next->part.x && HEAD->part.y == HEAD->part.y) {
+			return 1;
+		}
+
+		next = next->next;
+	}
+	*/
+
+	return 0;
+}
+
+void spawn_apple() {
+	// @todo Spawn apple not within snake or within the borders
+	// Set the seed
+	srand(time(0));
+
+	int x, y = 0;
+	while(1) {
+		x = rand() % width + 0;
+		y = rand() % height + 0;
+
+		if (x != width && x != 0 && y != height && y != 0) {
+			break;
+		}
+	}
+
+	apple.x = x;
+	apple.y = y;
+}
+
+int eats_apple() {
+	return snake->part.x == apple.x && snake->part.y == apple.y;
+}
+
 void frame() {
-	// We dont want to draw the whitespace's
+	// We don't want to draw the whitespace's
 	erase();
 
 	// Draw borders
@@ -69,6 +116,9 @@ void frame() {
 		HEAD = HEAD->next;
 	}
 
+	// Draw apple
+	mvaddch(apple.y, apple.x, TOKEN_APPLE);
+
 	refresh();
 }
 
@@ -84,12 +134,23 @@ int process_input() {
 		// @todo quit game
 	}
 
-	if (i != KEY_RIGHT || i != KEY_LEFT || i != KEY_UP || i != KEY_DOWN) {
-		// @todo raise error, key not accepted
+	// @todo check for key strokes like pause game and quit after game over
+
+	if (i != KEY_RIGHT && i != KEY_LEFT && i != KEY_UP && i != KEY_DOWN) {
+		// Ignore key, not valid
+		return 0;
 	}
 
 	direction = i;
 	return 1;
+}
+
+void expand_snake() {
+	llnode *last = linked_list_get_last(snake);
+
+	coord p;
+
+	//
 }
 
 void move_snake() {
@@ -143,10 +204,24 @@ void run() {
 
 	snake = linked_list_create_node(head);
 
+	// Spawn the first apple
+	spawn_apple();
+
 	while (1) {
 		// @todo  calculate stuff
 		process_input();
 		move_snake();
+
+		if (collides()) {
+			// @todo a blinking game over screen would be cool :)
+			break;
+		}
+
+		if (eats_apple()) {
+			expand_snake();
+			spawn_apple();
+		}
+
 		frame();
 
 		// Don't like this one; change
