@@ -12,11 +12,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ncurses.h>
+#include <unistd.h>
 #include <time.h>
 
-// @todo including .c files seems rather wrong...
+// gcc -Wall linked_list.c snake.c
 #include "snake.h"
-#include "linked_list.c"
+#include "linked_list.h"
 
 //
 llnode *snake;
@@ -61,16 +62,14 @@ int collides() {
 	}
 
 	// Head hits it's own tail
-	/*
-	llnode *next;
+	llnode *next = HEAD->next;
 	while (next != NULL) {
-		if (HEAD->part.x == next->part.x && HEAD->part.y == HEAD->part.y) {
+		if (HEAD->part.x == next->part.x && HEAD->part.y == next->part.y) {
 			return 1;
 		}
 
 		next = next->next;
 	}
-	*/
 
 	return 0;
 }
@@ -81,14 +80,11 @@ void spawn_apple() {
 	srand(time(0));
 
 	int x, y = 0;
-	while(1) {
+
+	do {
 		x = rand() % width + 0;
 		y = rand() % height + 0;
-
-		if (x != width && x != 0 && y != height && y != 0) {
-			break;
-		}
-	}
+	} while(x == 0 && x == height && y == 0 && y == width);
 
 	apple.x = x;
 	apple.y = y;
@@ -149,8 +145,34 @@ void expand_snake() {
 	llnode *last = linked_list_get_last(snake);
 
 	coord p;
+	p.x = 0;
+	p.y = 0;
+
+	// @todo find a better solution...
+	switch(direction) {
+		case KEY_UP:
+			p.x = last->part.x;
+			p.y = last->part.y+1;
+			break;
+		case KEY_DOWN:
+			p.x = last->part.x;
+			p.y = last->part.y-1;
+			break;
+		case KEY_LEFT:
+			p.x = last->part.x+1;
+			p.y = last->part.y;
+			break;
+		case KEY_RIGHT:
+			p.x = last->part.x-1;
+			p.y = last->part.y;
+			break;
+		default:
+			// Nothing
+			break;
+	}
 
 	//
+	linked_list_add_node(p, last);
 }
 
 void move_snake() {
@@ -160,6 +182,7 @@ void move_snake() {
 	new.x = HEAD->part.x;
 	new.y = HEAD->part.y;
 
+	// @todo if snake has more than one element, it can't move into the opposite direction
 	switch(direction) {
 		case KEY_UP:
 			new.y--;
@@ -225,6 +248,7 @@ void run() {
 		frame();
 
 		// Don't like this one; change
+		// usleep(500000);
 		usleep(500000);
 	}
 
@@ -234,4 +258,5 @@ void run() {
 
 int main() {
 	run();
+	return 1;
 }
