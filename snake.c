@@ -75,7 +75,6 @@ int collides() {
 }
 
 void spawn_apple() {
-	// @todo Spawn apple not within snake or within the borders
 	// Set the seed
 	srand(time(0));
 
@@ -118,27 +117,28 @@ void frame() {
 	refresh();
 }
 
-int process_input() {
+void process_input() {
 	int i = getch();
 
 	// getch returns -1 when no user input given
 	if (i == -1) {
-		return 0;
+		return;
 	}
 
 	if (i == 'q') {
-		// @todo quit game
+		run_game = 0;
 	}
 
-	// @todo check for key strokes like pause game and quit after game over
+	if (i == ' ') {
+		pause_game = !pause_game;
+	}
 
 	if (i != KEY_RIGHT && i != KEY_LEFT && i != KEY_UP && i != KEY_DOWN) {
 		// Ignore key, not valid
-		return 0;
+		return;
 	}
 
 	direction = i;
-	return 1;
 }
 
 void expand_snake() {
@@ -230,9 +230,14 @@ void run() {
 	// Spawn the first apple
 	spawn_apple();
 
-	while (1) {
-		// @todo  calculate stuff
+	while (run_game) {
 		process_input();
+
+		if (pause_game == 1) {
+			// skip frame
+			continue;
+		}
+
 		move_snake();
 
 		if (collides()) {
@@ -245,6 +250,8 @@ void run() {
 			spawn_apple();
 		}
 
+		// @todo perhaps the frame method should handle input and drawing
+		// @todo make a level file and end screen etc.
 		frame();
 
 		// Don't like this one; change

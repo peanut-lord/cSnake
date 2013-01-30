@@ -13,10 +13,11 @@
 #define SNAKE_H_
 
 // Variables
-int width     = 50;
-int height    = 10;
-int direction = KEY_RIGHT;
-int state     = 1; // 1 = running, 2 = quit, 3 = lost;
+int width      = 50;
+int height     = 10;
+int direction  = KEY_RIGHT;
+int pause_game = 0;
+int run_game   = 1;
 
 char TOKEN_SNAKE = 'S';
 char TOKEN_APPLE = 'A';
@@ -31,9 +32,9 @@ void move_snake();
 void expand_snake();
 void frame();
 
-int  process_input();
-int  collides();
-int  eats_apple();
+void  process_input();
+int   collides();
+int   eats_apple();
 
 
 #endif /* SNAKE_H_ */
