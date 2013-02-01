@@ -80,7 +80,7 @@ void draw() {
 		draw_snake();
 		draw_apple();
 	} else {
-		// Only every third frame
+		// Only every second frame
 		if (frameCnt % 2) {
 			draw_game_over();
 		}
