@@ -15,6 +15,7 @@ extern int width;
 extern int height;
 extern int direction;
 extern int pause_game;
+extern int game_over;
 extern int run_game;
 
 extern char TOKEN_SNAKE;

@@ -10,6 +10,7 @@
  */
 #include <stdio.h>
 #include <ncurses.h>
+#include <string.h>
 
 #include "globals.h"
 #include "linked_list.h"
@@ -18,6 +19,8 @@
 // I don't get this... why no extern? ARGH!
 llnode *snake;
 coord  apple;
+
+int frameCnt = 0;
 
 void draw_init() {
 	WINDOW *win = initscr();
@@ -63,7 +66,8 @@ void draw_apple() {
 }
 
 void draw_game_over() {
-
+	char msg[] = "Game Over!";
+	mvaddstr(height / 2, (width / 2 - strlen(msg) / 2), msg);
 }
 
 void draw() {
@@ -72,12 +76,16 @@ void draw() {
 
 	draw_borders();
 
-	if (1) {
+	if (game_over == 0) {
 		draw_snake();
 		draw_apple();
 	} else {
-		// do something else
+		// Only every third frame
+		if (frameCnt % 2) {
+			draw_game_over();
+		}
 	}
 
 	refresh();
+	frameCnt++;
 }

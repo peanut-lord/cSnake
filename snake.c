@@ -97,8 +97,7 @@ void frame() {
 
 	if (collides()) {
 		// @todo a blinking game over screen would be cool :)
-		run_game = 0;
-		return;
+		game_over = 1;
 	}
 
 	if (eats_apple()) {
@@ -123,6 +122,11 @@ void process_input() {
 
 	if (i == ' ') {
 		pause_game = !pause_game;
+	}
+
+	if (game_over == 1 && i == ' ') {
+		// quit
+		run_game = 0;
 	}
 
 	if (i != KEY_RIGHT && i != KEY_LEFT && i != KEY_UP && i != KEY_DOWN) {
