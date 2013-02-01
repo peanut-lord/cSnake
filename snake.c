@@ -16,8 +16,10 @@
 #include <time.h>
 
 // gcc -Wall linked_list.c snake.c
+#include "globals.h"
 #include "snake.h"
 #include "linked_list.h"
+#include "draw.h"
 
 //
 llnode *snake;
@@ -27,17 +29,7 @@ coord  apple;
 FILE *f;
 
 void setup() {
-	WINDOW *win = initscr();
-
-	// We don't want to wait for the EOF && getch shall not block the terminal
-	cbreak();
-	timeout(0);
-
-	// Without keypad enabled KEY_* and getch won't match
-	keypad(win, TRUE);
-
-	// No cursor
-	curs_set(0);
+	draw_init();
 
 	// DEBUG
 	f = fopen("/tmp/snake", "a+");
@@ -50,7 +42,7 @@ void tear_down() {
 	// Close file
 	fclose(f);
 
-	endwin();
+	draw_shutdown();
 }
 
 int collides() {
@@ -94,27 +86,27 @@ int eats_apple() {
 }
 
 void frame() {
-	// We don't want to draw the whitespace's
-	erase();
+	process_input();
 
-	// Draw borders
-	mvhline(0, 0, ACS_PLMINUS, width);
-	mvhline(height, 0, ACS_PLMINUS, width);
-
-	mvvline(0, 0, ACS_PLMINUS, height+1);
-	mvvline(0, width, ACS_PLMINUS, height+1);
-
-	// Draw the snake
-	llnode *HEAD = snake;
-	while(HEAD != NULL) {
-		mvaddch(HEAD->part.y, HEAD->part.x, TOKEN_SNAKE);
-		HEAD = HEAD->next;
+	if (pause_game == 1) {
+		// skip frame
+		return;
 	}
 
-	// Draw apple
-	mvaddch(apple.y, apple.x, TOKEN_APPLE);
+	move_snake();
 
-	refresh();
+	if (collides()) {
+		// @todo a blinking game over screen would be cool :)
+		run_game = 0;
+		return;
+	}
+
+	if (eats_apple()) {
+		expand_snake();
+		spawn_apple();
+	}
+
+	draw();
 }
 
 void process_input() {
@@ -231,25 +223,6 @@ void run() {
 	spawn_apple();
 
 	while (run_game) {
-		process_input();
-
-		if (pause_game == 1) {
-			// skip frame
-			continue;
-		}
-
-		move_snake();
-
-		if (collides()) {
-			// @todo a blinking game over screen would be cool :)
-			break;
-		}
-
-		if (eats_apple()) {
-			expand_snake();
-			spawn_apple();
-		}
-
 		// @todo perhaps the frame method should handle input and drawing
 		// @todo make a level file and end screen etc.
 		frame();
