@@ -15,7 +15,7 @@
 #include <unistd.h>
 #include <time.h>
 
-// gcc -Wall linked_list.c snake.c
+// gcc -W all -l ncurses linked_list.c snake.c draw.c
 #include "globals.h"
 #include "snake.h"
 #include "linked_list.h"
@@ -70,12 +70,28 @@ void spawn_apple() {
 	// Set the seed
 	srand(time(0));
 
-	int x, y = 0;
+	int valid, x, y = 0;
 
-	do {
+	llnode *next = snake;
+	while(!valid) {
 		x = rand() % width + 0;
 		y = rand() % height + 0;
-	} while(x == 0 && x == height && y == 0 && y == width);
+
+		// Check if coords are inside the snake
+		while(next != NULL) {
+			if (next->part.x != x && next->part.y != y) {
+				valid = 1;
+				break;
+			}
+
+			next = next->next;
+		}
+
+		// Check if we hit the wall
+		if (x != 0 && x != height && y != 0 && y != width) {
+			valid = 1;
+		}
+	}
 
 	apple.x = x;
 	apple.y = y;
@@ -127,6 +143,11 @@ void process_input() {
 	if (game_over == 1 && i == ' ') {
 		// quit
 		run_game = 0;
+	}
+
+	// If the game is paused, we don't take any directions from here
+	if (pause_game == 1) {
+		return;
 	}
 
 	if (i != KEY_RIGHT && i != KEY_LEFT && i != KEY_UP && i != KEY_DOWN) {

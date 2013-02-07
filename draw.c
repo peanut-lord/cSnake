@@ -34,6 +34,9 @@ void draw_init() {
 
 	// No cursor
 	curs_set(0);
+
+	// Don't output the given char
+	noecho();
 }
 
 void draw_shutdown() {
