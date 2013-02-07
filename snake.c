@@ -21,6 +21,8 @@
 #include "linked_list.h"
 #include "draw.h"
 
+#define DEBUG 1
+
 //
 llnode *snake;
 coord  apple;
@@ -31,16 +33,20 @@ FILE *f;
 void setup() {
 	draw_init();
 
+#if DEBUG == 1
 	// DEBUG
 	f = fopen("/tmp/snake", "a+");
+#endif
 }
 
 void tear_down() {
 	// Destroy the snake
 	linked_list_destroy(snake);
 
+#if DEBUG == 1
 	// Close file
 	fclose(f);
+#endif
 
 	draw_shutdown();
 }
@@ -73,23 +79,31 @@ void spawn_apple() {
 	int valid, x, y = 0;
 
 	llnode *next = snake;
-	while(!valid) {
+	while(1) {
 		x = rand() % width + 0;
 		y = rand() % height + 0;
 
+		// Check if we hit the wall
+		if (y != 0 && y != height && x != 0 && x != width) {
+			valid = 1;
+		}
+
 		// Check if coords are inside the snake
 		while(next != NULL) {
-			if (next->part.x != x && next->part.y != y) {
-				valid = 1;
+			if (next->part.x == x && next->part.y == y) {
+				valid = 0;
 				break;
 			}
 
 			next = next->next;
 		}
 
-		// Check if we hit the wall
-		if (x != 0 && x != height && y != 0 && y != width) {
-			valid = 1;
+#if DEBUG == 1
+		fprintf(f, "width: %d, height: %d, x: %d, y: %d, valid: %d\n", width, height, x, y, valid);
+#endif
+
+		if (valid == 1) {
+			break;
 		}
 	}
 

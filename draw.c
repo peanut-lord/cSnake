@@ -48,7 +48,7 @@ void draw_borders() {
 	mvhline(0, 0, ACS_PLMINUS, width);
 	mvhline(height, 0, ACS_PLMINUS, width);
 
-	mvvline(0, 0, ACS_PLMINUS, height+1);
+	mvvline(0, 0, ACS_PLMINUS, height);
 	mvvline(0, width, ACS_PLMINUS, height+1);
 }
 
