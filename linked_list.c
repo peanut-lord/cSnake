@@ -25,11 +25,12 @@ llnode *linked_list_create_node(coord part) {
 
 	element->part = part;
 	element->next = NULL;
+	element->prev = NULL;
 
 	return element;
 }
 
-llnode *linked_list_add_node(coord part, llnode *current) {
+llnode *linked_list_append_node(coord part, llnode *current) {
 	// We need a node first
 	llnode *next = linked_list_create_node(part);
 
@@ -38,7 +39,32 @@ llnode *linked_list_add_node(coord part, llnode *current) {
 	}
 
 	current->next = next;
+	next->prev    = current;
+
 	return next;
+}
+
+llnode *linked_list_prepend_node(coord part, llnode *current) {
+	// We need a node first
+	llnode *node = linked_list_create_node(part);
+
+	if (node == NULL) {
+		return NULL;
+	}
+
+	// Rearrange the element
+	if (current->prev != NULL) {
+		node->prev = current->prev;
+		node->prev->next = node;
+
+		current->prev = node;
+	} else {
+		node->next = current;
+		current->prev = node;
+	}
+
+	node->next = current;
+	return node;
 }
 
 llnode *linked_list_get_last(llnode *node) {
@@ -54,7 +80,9 @@ void linked_list_destroy(llnode *node) {
 	// We don't want elements get lost in memory
 	if (node->next != NULL) {
 		linked_list_destroy(node->next);
+
 		node->next = NULL;
+		node->prev = NULL;
 	}
 
 	free(node);

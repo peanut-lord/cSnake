@@ -130,9 +130,6 @@ void frame() {
 	}
 
 	if (eats_apple()) {
-#if 0
-		expand_snake();
-#endif
 		spawn_apple();
 	}
 
@@ -173,81 +170,7 @@ void process_input() {
 	direction = i;
 }
 
-void expand_snake() {
-	llnode *last = linked_list_get_last(snake);
-
-	coord p;
-	p.x = 0;
-	p.y = 0;
-
-	// @todo find a better solution...
-	switch(direction) {
-		case KEY_UP:
-			p.x = last->part.x;
-			p.y = last->part.y+1;
-			break;
-		case KEY_DOWN:
-			p.x = last->part.x;
-			p.y = last->part.y-1;
-			break;
-		case KEY_LEFT:
-			p.x = last->part.x+1;
-			p.y = last->part.y;
-			break;
-		case KEY_RIGHT:
-			p.x = last->part.x-1;
-			p.y = last->part.y;
-			break;
-		default:
-			// Nothing
-			break;
-	}
-
-	//
-	linked_list_add_node(p, last);
-}
-
 void move_snake() {
-#if 0
-	llnode *HEAD = snake;
-	coord new;
-
-	new.x = HEAD->part.x;
-	new.y = HEAD->part.y;
-
-	// @todo if snake has more than one element, it can't move into the opposite direction
-	switch(direction) {
-		case KEY_UP:
-			new.y--;
-			break;
-		case KEY_DOWN:
-			new.y++;
-			break;
-		case KEY_LEFT:
-			new.x--;
-			break;
-		case KEY_RIGHT:
-			new.x++;
-			break;
-		default:
-			// Nothing
-			break;
-	}
-
-	// The next element in the snake linked list is the
-	// future position of the current element
-	coord prev;
-
-	while (HEAD != NULL) {
-		prev.x = HEAD->part.x;
-		prev.y = HEAD->part.y;
-
-		HEAD->part = new;
-		new = prev;
-
-		HEAD = HEAD->next;
-	}
-#else
 	coord pos;
 	pos.x = snake->part.x;
 	pos.y = snake->part.y;
@@ -270,26 +193,17 @@ void move_snake() {
 			break;
 	}
 
-	llnode *prepend = linked_list_create_node(pos);
-	prepend->next = snake;
-	snake = prepend;
-
+	snake = linked_list_prepend_node(pos, snake);
 	if(!eats_apple()) {
-		// Get the next to last to erease the pointer
-		// @todo find cleaner way, perhaps double linked list
-		llnode *nextToLast = snake;
-		while(nextToLast->next != NULL && nextToLast->next->next != NULL) {
-			nextToLast = nextToLast->next;
-		}
-
-		// Remove last
 		llnode *last = linked_list_get_last(snake);
-		linked_list_destroy(last);
 
+		// We need to remove the reference in the next to last to the last
+		llnode *nextToLast = last->prev;
+
+		linked_list_destroy(last);
 		nextToLast->next = NULL;
 	}
 
-#endif
 }
 
 void run() {

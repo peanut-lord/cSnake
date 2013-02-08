@@ -20,10 +20,12 @@ typedef struct coord {
 typedef struct llnode {
 	struct coord part;
 	struct llnode *next;
+	struct llnode *prev;
 } llnode;
 
 llnode *linked_list_create_node(coord part);
-llnode *linked_list_add_node(coord part, llnode *prev);
+llnode *linked_list_append_node(coord part, llnode *current);
+llnode *linked_list_prepend_node(coord part, llnode *current);
 llnode *linked_list_get_last(llnode *element);
 void    linked_list_destroy(llnode *node);
 

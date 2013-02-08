@@ -32,12 +32,11 @@ void run();
 
 void spawn_apple();
 void move_snake();
-void expand_snake();
 void frame();
 
-void  process_input();
-int   collides();
-int   eats_apple();
+void process_input();
+int  collides();
+int  eats_apple();
 
 
 #endif /* SNAKE_H_ */
