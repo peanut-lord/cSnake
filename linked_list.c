@@ -77,7 +77,11 @@ llnode *linked_list_get_last(llnode *node) {
 }
 
 void linked_list_destroy(llnode *node) {
-	// We don't want elements get lost in memory
+	// We need to erease a pointer pointing to us
+	if (node->prev != NULL) {
+		node->prev->next = NULL;
+	}
+
 	if (node->next != NULL) {
 		linked_list_destroy(node->next);
 
