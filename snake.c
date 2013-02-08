@@ -229,8 +229,7 @@ void run() {
 		ftime(&now);
 
 		diff = (1000.0 * (now.time - last_update.time) + (now.millitm - last_update.millitm));
-
-		if (diff < 400.0) {
+		if (diff < frame_rate) {
 			// Skip Frame
 			continue;
 		}

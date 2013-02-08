@@ -15,13 +15,14 @@
 #include "globals.h"
 
 // Variables
-int width      = 50;
-int height     = 10;
-int direction  = KEY_RIGHT;
-int pause_game = 0;
-int game_over  = 0;
-int run_game   = 1;
-int score      = 0;
+int   width      = 50;
+int   height     = 10;
+int   direction  = KEY_RIGHT;
+int   pause_game = 0;
+int   game_over  = 0;
+int   run_game   = 1;
+int   score      = 0;
+float frame_rate = 400.0;
 
 char TOKEN_SNAKE = 'S';
 char TOKEN_APPLE = 'A';
