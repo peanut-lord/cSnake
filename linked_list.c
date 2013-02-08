@@ -54,6 +54,7 @@ void linked_list_destroy(llnode *node) {
 	// We don't want elements get lost in memory
 	if (node->next != NULL) {
 		linked_list_destroy(node->next);
+		node->next = NULL;
 	}
 
 	free(node);

@@ -15,7 +15,7 @@
 #include <unistd.h>
 #include <time.h>
 
-// gcc -W all -l ncurses linked_list.c snake.c draw.c
+// gcc -g -Wall -l ncurses linked_list.c snake.c draw.c
 #include "globals.h"
 #include "snake.h"
 #include "linked_list.h"
@@ -119,19 +119,20 @@ void frame() {
 	process_input();
 
 	if (pause_game == 1) {
-		// skip frame
+		// Skip frame
 		return;
 	}
 
 	move_snake();
 
 	if (collides()) {
-		// @todo a blinking game over screen would be cool :)
 		game_over = 1;
 	}
 
 	if (eats_apple()) {
+#if 0
 		expand_snake();
+#endif
 		spawn_apple();
 	}
 
@@ -207,6 +208,7 @@ void expand_snake() {
 }
 
 void move_snake() {
+#if 0
 	llnode *HEAD = snake;
 	coord new;
 
@@ -245,6 +247,49 @@ void move_snake() {
 
 		HEAD = HEAD->next;
 	}
+#else
+	coord pos;
+	pos.x = snake->part.x;
+	pos.y = snake->part.y;
+
+	switch(direction) {
+		case KEY_UP:
+			pos.y--;
+			break;
+		case KEY_DOWN:
+			pos.y++;
+			break;
+		case KEY_LEFT:
+			pos.x--;
+			break;
+		case KEY_RIGHT:
+			pos.x++;
+			break;
+		default:
+			// Nothing
+			break;
+	}
+
+	llnode *prepend = linked_list_create_node(pos);
+	prepend->next = snake;
+	snake = prepend;
+
+	if(!eats_apple()) {
+		// Get the next to last to erease the pointer
+		// @todo find cleaner way, perhaps double linked list
+		llnode *nextToLast = snake;
+		while(nextToLast->next != NULL && nextToLast->next->next != NULL) {
+			nextToLast = nextToLast->next;
+		}
+
+		// Remove last
+		llnode *last = linked_list_get_last(snake);
+		linked_list_destroy(last);
+
+		nextToLast->next = NULL;
+	}
+
+#endif
 }
 
 void run() {
@@ -262,8 +307,7 @@ void run() {
 	spawn_apple();
 
 	while (run_game) {
-		// @todo perhaps the frame method should handle input and drawing
-		// @todo make a level file and end screen etc.
+		// Get the input and draw a frame
 		frame();
 
 		// Don't like this one; change
