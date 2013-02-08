@@ -21,6 +21,7 @@ int direction  = KEY_RIGHT;
 int pause_game = 0;
 int game_over  = 0;
 int run_game   = 1;
+int score      = 0;
 
 char TOKEN_SNAKE = 'S';
 char TOKEN_APPLE = 'A';

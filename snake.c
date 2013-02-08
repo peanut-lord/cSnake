@@ -130,6 +130,8 @@ void frame() {
 	}
 
 	if (eats_apple()) {
+		// Yipiieeee, we get another round in hell
+		score++;
 		spawn_apple();
 	}
 

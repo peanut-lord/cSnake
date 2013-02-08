@@ -17,6 +17,7 @@ void draw_shutdown();
 void draw_borders();
 void draw_snake();
 void draw_apple();
+void draw_score();
 void draw_game_over();
 void draw();
 

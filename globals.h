@@ -17,6 +17,7 @@ extern int direction;
 extern int pause_game;
 extern int game_over;
 extern int run_game;
+extern int score;
 
 extern char TOKEN_SNAKE;
 extern char TOKEN_APPLE;

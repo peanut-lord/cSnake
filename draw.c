@@ -68,6 +68,13 @@ void draw_apple() {
 	mvaddch(apple.y, apple.x, TOKEN_APPLE);
 }
 
+void draw_score() {
+	char buffer[50]; // should be enough
+	sprintf(buffer, "Score: %d", score);
+
+	mvaddstr(1, width+4, buffer);
+}
+
 void draw_game_over() {
 	char msg[] = "Game Over!";
 	mvaddstr(height / 2, (width / 2 - strlen(msg) / 2), msg);
@@ -82,6 +89,7 @@ void draw() {
 	if (game_over == 0) {
 		draw_snake();
 		draw_apple();
+		draw_score();
 	} else {
 		// Only every second frame
 		if (frameCnt % 2) {
