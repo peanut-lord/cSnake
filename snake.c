@@ -14,6 +14,7 @@
 #include <ncurses.h>
 #include <unistd.h>
 #include <time.h>
+#include <sys/timeb.h>
 
 // gcc -g -Wall -l ncurses linked_list.c snake.c draw.c
 #include "globals.h"
@@ -219,16 +220,25 @@ void run() {
 
 	snake = linked_list_create_node(head);
 
+	ftime(&last_update);
+
 	// Spawn the first apple
 	spawn_apple();
 
 	while (run_game) {
+		ftime(&now);
+
+		diff = (1000.0 * (now.time - last_update.time) + (now.millitm - last_update.millitm));
+
+		if (diff < 400.0) {
+			// Skip Frame
+			continue;
+		}
+
 		// Get the input and draw a frame
 		frame();
 
-		// Don't like this one; change
-		// usleep(500000);
-		usleep(500000);
+		last_update = now;
 	}
 
 	// Game's over

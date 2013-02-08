@@ -26,6 +26,10 @@ int score      = 0;
 char TOKEN_SNAKE = 'S';
 char TOKEN_APPLE = 'A';
 
+// For the screen update
+struct timeb last_update, now;
+float diff;
+
 // Methods
 void setup();
 void tear_down();
