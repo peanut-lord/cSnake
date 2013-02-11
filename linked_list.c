@@ -52,18 +52,15 @@ llnode *linked_list_prepend_node(coord part, llnode *current) {
 		return NULL;
 	}
 
-	// Rearrange the element
+	// Rearrange the nodes to insert this one in between
 	if (current->prev != NULL) {
-		node->prev = current->prev;
+		node->prev       = current->prev;
 		node->prev->next = node;
-
-		current->prev = node;
-	} else {
-		node->next = current;
-		current->prev = node;
 	}
 
-	node->next = current;
+	node->next    = current;
+	current->prev = node;
+
 	return node;
 }
 
@@ -77,7 +74,7 @@ llnode *linked_list_get_last(llnode *node) {
 }
 
 void linked_list_destroy(llnode *node) {
-	// We need to erease a pointer pointing to us
+	// We need to erase a pointer pointing to us
 	if (node->prev != NULL) {
 		node->prev->next = NULL;
 	}

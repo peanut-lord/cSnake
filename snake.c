@@ -53,17 +53,15 @@ void tear_down() {
 }
 
 int collides() {
-	llnode *HEAD = snake;
-
 	// Head hits the borders
-	if (HEAD->part.x == 0 || HEAD->part.x == width || HEAD->part.y == 0 || HEAD->part.y == height) {
+	if (snake->part.x == 0 || snake->part.x == width || snake->part.y == 0 || snake->part.y == height) {
 		return 1;
 	}
 
 	// Head hits it's own tail
-	llnode *next = HEAD->next;
+	llnode *next = snake->next;
 	while (next != NULL) {
-		if (HEAD->part.x == next->part.x && HEAD->part.y == next->part.y) {
+		if (snake->part.x == next->part.x && snake->part.y == next->part.y) {
 			return 1;
 		}
 
