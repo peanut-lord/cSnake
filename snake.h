@@ -43,6 +43,7 @@ void frame();
 void process_input();
 int  collides();
 int  eats_apple();
+void recalculate_framerate();
 
 
 #endif /* SNAKE_H_ */

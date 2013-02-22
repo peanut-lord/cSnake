@@ -114,6 +114,23 @@ int eats_apple() {
 	return snake->part.x == apple.x && snake->part.y == apple.y;
 }
 
+void recalculate_framerate() {
+	if (score >= 50) {
+		frame_rate = 100.0;
+	} else if (score >= 35) {
+		frame_rate = 150.0;
+	} else if (score >= 25) {
+		frame_rate = 200.0;
+	} else if (score >= 15) {
+		frame_rate = 250.0;
+	} else if (score >= 5) {
+		frame_rate = 300.0;
+	} else {
+		frame_rate = 400.0;
+	}
+}
+
+// @todo increase speed by score
 void frame() {
 	process_input();
 
@@ -126,12 +143,17 @@ void frame() {
 
 	if (collides()) {
 		game_over = 1;
+
+		// Reset framerate so "Game Over" is not like text on drugs
+		frame_rate = 400.0;
 	}
 
 	if (eats_apple()) {
 		// Yipiieeee, we get another round in hell
 		score++;
 		spawn_apple();
+
+		recalculate_framerate();
 	}
 
 	draw();

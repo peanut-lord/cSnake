@@ -80,6 +80,13 @@ void draw_game_over() {
 	mvaddstr(height / 2, (width / 2 - strlen(msg) / 2), msg);
 }
 
+void draw_debug() {
+	char buffer[100];
+	sprintf(buffer, "Framerate: %.1f", frame_rate);
+
+	mvaddstr(2, width+4, buffer);
+}
+
 void draw() {
 	// We don't want to draw the whitespace's
 	erase();
@@ -90,6 +97,10 @@ void draw() {
 		draw_snake();
 		draw_apple();
 		draw_score();
+
+#if 1
+		draw_debug();
+#endif
 	} else {
 		// Only every second frame
 		if (frameCnt % 2) {
