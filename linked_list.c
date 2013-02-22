@@ -73,6 +73,18 @@ llnode *linked_list_get_last(llnode *node) {
 	return target;
 }
 
+int linked_list_count(llnode *node) {
+	llnode *next = node;
+	int cnt;
+
+	while(next != NULL) {
+		cnt++;
+		next = next->next;
+	}
+
+	return cnt;
+}
+
 void linked_list_destroy(llnode *node) {
 	// We need to erase a pointer pointing to us
 	if (node->prev != NULL) {

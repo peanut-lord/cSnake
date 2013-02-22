@@ -81,10 +81,20 @@ void draw_game_over() {
 }
 
 void draw_debug() {
-	char buffer[100];
-	sprintf(buffer, "Framerate: %.1f", frame_rate);
+	char frameDbg[50];
+	char appleDbg[20];
+	char snakeDbg[20];
+	char snakeTailDbg[20];
 
-	mvaddstr(2, width+4, buffer);
+	sprintf(frameDbg, "Framerate: %.1f,, ", frame_rate);
+	sprintf(appleDbg, "Apple: %d/%d", apple.x, apple.y);
+	sprintf(snakeDbg, "Snake Head: %d/%d", snake->part.x, snake->part.y);
+	sprintf(snakeTailDbg, "Snake Length: %d", linked_list_count(snake));
+
+	mvaddstr(3, width+4, frameDbg);
+	mvaddstr(4, width+4, appleDbg);
+	mvaddstr(5, width+4, snakeDbg);
+	mvaddstr(6, width+4, snakeTailDbg);
 }
 
 void draw() {

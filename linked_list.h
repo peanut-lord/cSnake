@@ -27,6 +27,7 @@ llnode *linked_list_create_node(coord part);
 llnode *linked_list_append_node(coord part, llnode *current);
 llnode *linked_list_prepend_node(coord part, llnode *current);
 llnode *linked_list_get_last(llnode *element);
+int     linked_list_count(llnode *element);
 void    linked_list_destroy(llnode *node);
 
 #endif /* LINKED_LIST_H_ */
